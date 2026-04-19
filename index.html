@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sales Commission Calculator - Premium UI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --accent: #7c3aed; /* Default Violet */
+      --text-main: #f8fafc;
+      --transition-btn: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* CSS Reset */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--text-main);
+      overflow: hidden; /* Prevent scrolling during Ken Burns */
+      background: #0f172a;
+    }
+
+    /* 
+      ========================================
+      BACKGROUND ANIMATIONS & FLAGS
+      ========================================
+    */
+    .bg-layer {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      z-index: 1;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.6s ease, transform 0.8s ease;
+    }
+
+    /* Initial Mosaic State */
+    .bg-mosaic {
+      display: flex;
+      opacity: 1; /* Visible by default */
+    }
+
+    /* Overlays to ensure legibility */
+    .overlay-grid {
+      position: absolute;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.35); /* Soft dark overlay for mosaic */
+      z-index: 2;
+    }
+    
+    .overlay-focus {
+      position: absolute;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: radial-gradient(circle at center, rgba(15,23,42,0.4) 0%, rgba(15,23,42,0.85) 100%);
+      z-index: 2;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+
+    /* Ken Burns Animation */
+    @keyframes kenBurns {
+      from { transform: scale(1.08); }
+      to { transform: scale(1.0); }
+    }
+
+    .flag-active {
+      opacity: 0.6 !important;
+      animation: kenBurns 4s ease-out forwards;
+    }
+
+    /* 🇮🇳 India Flag */
+    .flag-in {
+      background-color: #FFFFFF;
+      background-image: linear-gradient(to bottom, #FF9933 0%, #FF9933 33.33%, #FFFFFF 33.33%, #FFFFFF 66.66%, #138808 66.66%);
+      flex: 1;
+      height: 100%;
+    }
+    .flag-in::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(8vw, 15vh); height: min(8vw, 15vh);
+      border-radius: 50%;
+      border: 6px solid #000080;
+      background: radial-gradient(circle, transparent 40%, rgba(0,0,128,0.2) 60%);
+    }
+
+    /* 🇺🇸 US Flag */
+    .flag-us {
+      background-color: #B22234;
+      background-image: repeating-linear-gradient(to bottom, transparent 0%, transparent 7.69%, #FFFFFF 7.69%, #FFFFFF 15.38%);
+      flex: 1;
+      height: 100%;
+    }
+    .flag-us::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 40%; height: 53.85%;
+      background-color: #3C3B6E;
+      background-image: radial-gradient(white 1.5px, transparent 1.5px);
+      background-size: 20px 20px;
+      background-position: 0 0;
+    }
+
+    /* 🇬🇧 UK Flag */
+    .flag-uk {
+      background-color: #012169;
+      background-image: 
+        linear-gradient(90deg, transparent 46%, #C8102E 46%, #C8102E 54%, transparent 54%),
+        linear-gradient(0deg, transparent 42%, #C8102E 42%, #C8102E 58%, transparent 58%),
+        linear-gradient(90deg, transparent 43%, #FFFFFF 43%, #FFFFFF 57%, transparent 57%),
+        linear-gradient(0deg, transparent 39%, #FFFFFF 39%, #FFFFFF 61%, transparent 61%),
+        linear-gradient(33deg, transparent 48%, #C8102E 48%, #C8102E 52%, transparent 52%),
+        linear-gradient(147deg, transparent 48%, #C8102E 48%, #C8102E 52%, transparent 52%),
+        linear-gradient(33deg, transparent 45%, #FFFFFF 45%, #FFFFFF 55%, transparent 55%),
+        linear-gradient(147deg, transparent 45%, #FFFFFF 45%, #FFFFFF 55%, transparent 55%);
+      flex: 1;
+      height: 100%;
+    }
+
+    /* Hidden single flags */
+    .bg-single {
+      display: none;
+    }
+
+    /* 
+      ========================================
+      GLASSMORPHISM CARD
+      ========================================
+    */
+    .card-container {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 500px;
+      padding: 2.5rem;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(24px) saturate(1.6);
+      -webkit-backdrop-filter: blur(24px) saturate(1.6);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    }
+
+    .header-title {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .header-title h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: #ffffff;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    .header-title p {
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: rgba(255, 255, 255, 0.95);
+      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.85rem 1.2rem;
+      background: rgba(255, 255, 255, 0.90);
+      color: #1a1a2e;
+      border: 1.5px solid rgba(255, 255, 255, 0.5);
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      outline: none;
+      transition: border-color 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    .form-control::placeholder {
+      font-weight: 400;
+      color: #94a3b8;
+    }
+
+    .form-control:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(var(--accent-rgb, 124, 58, 237), 0.25);
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 1.1rem;
+      background: var(--accent);
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      transition: all var(--transition-btn);
+      margin-top: 0.5rem;
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      filter: brightness(1.1);
+    }
+
+    .btn-submit:active {
+      transform: translateY(1px);
+    }
+
+    /* 
+      ========================================
+      RESULT DISPLAY
+      ========================================
+    */
+    .result-container {
+      margin-top: 1.5rem;
+      display: none;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .result-container h3 {
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      color: var(--accent);
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
+
+    .result-details {
+      display: flex;
+      justify-content: space-between;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    .result-amount {
+      margin-top: 1.2rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .result-amount span {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--accent);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+    }
+
+    .error-container {
+      display: none;
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 10px;
+      color: #fca5a5;
+      font-weight: 500;
+      animation: slideUp 0.3s ease;
+    }
+
+    /* UX Heuristics: Navigation & Help */
+    .top-nav {
+      position: absolute;
+      top: 1rem;
+      left: 1.5rem;
+      right: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      z-index: 20;
+    }
+    .icon-btn {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all var(--transition-btn);
+    }
+    .icon-btn:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    /* Modal Help */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(5px);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+      animation: kenBurns 0.3s ease-out forwards;
+    }
+    .modal-content {
+      background: #1e293b;
+      padding: 2rem;
+      border-radius: 12px;
+      max-width: 500px;
+      width: 90%;
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #e2e8f0;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    }
+    .modal-content h2 { margin-bottom: 1rem; color: white; }
+    .modal-content p, .modal-content li { margin-bottom: 0.8rem; line-height: 1.5; font-size: 0.95rem; }
+    .close-modal {
+      display: block; width: 100%; margin-top: 1.5rem;
+      padding: 0.8rem; background: #3b82f6; color: white;
+      border: none; border-radius: 8px; font-weight: bold; cursor: pointer;
+    }
+
+    /* UX: System Status Spinner */
+    .spinner {
+      display: none;
+      border: 3px solid rgba(255,255,255,0.2);
+      border-top-color: white;
+      border-radius: 50%;
+      width: 24px; height: 24px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem auto;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <!-- UX Navigation -->
+  <nav class="top-nav">
+    <button id="btn-back" class="icon-btn">← Start Over</button>
+    <button id="btn-help" class="icon-btn">? Help</button>
+  </nav>
+
+  <!-- Help Modal -->
+  <div id="help-modal" class="modal-overlay">
+    <div class="modal-content">
+      <h2>How to use this Calculator</h2>
+      <p>This system calculates your final commissions based on the region you operate.</p>
+      <ul>
+        <li><strong>India:</strong> 10% commission on Net Sales.</li>
+        <li><strong>United States:</strong> 15% commission on Net Sales.</li>
+        <li><strong>United Kingdom:</strong> 12% commission on Net Sales.</li>
+      </ul>
+      <p><em>Note: Net Sales = Total Sales - Discounts. Discounts cannot exceed Total Sales.</em></p>
+      <button id="close-modal" class="close-modal">Understood</button>
+    </div>
+  </div>
+
+  <!-- BACKGROUND MOSAIC (Initial State) -->
+  <div id="bg-mosaic" class="bg-layer bg-mosaic">
+    <div class="flag-in"></div>
+    <div class="flag-us"></div>
+    <div class="flag-uk"></div>
+  </div>
+  <div id="overlay-grid" class="overlay-grid"></div>
+
+  <!-- SINGLE FLAGS FOR ACTIVE STATE -->
+  <div id="bg-in" class="bg-layer bg-single flag-in"></div>
+  <div id="bg-us" class="bg-layer bg-single flag-us"></div>
+  <div id="bg-uk" class="bg-layer bg-single flag-uk"></div>
+  <div id="overlay-focus" class="overlay-focus"></div>
+
+  <!-- GLASSMORPHISM UI -->
+  <main class="card-container">
+    <div class="header-title">
+      <h1>Commission Matrix</h1>
+      <p>Estimate your global sales margins.</p>
+    </div>
+
+    <form id="commission-form">
+      <div class="form-group">
+        <label for="country-select">Operating Region</label>
+        <select id="country-select" class="form-control" required>
+          <option value="" disabled selected>Select a country...</option>
+          <option value="IN">India (10%)</option>
+          <option value="US">United States (15%)</option>
+          <option value="UK">United Kingdom (12%)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="sales-input">Total Sales ($)</label>
+        <input type="number" id="sales-input" class="form-control" step="0.01" min="0" placeholder="e.g. 15000.00" required>
+      </div>
+
+      <div class="form-group">
+        <label for="discounts-input">Discounts Applied ($)</label>
+        <input type="number" id="discounts-input" class="form-control" step="0.01" min="0" placeholder="e.g. 500.00">
+      </div>
+
+      <button type="submit" id="btn-calculate" class="btn-submit">Calculate Remuneration</button>
+    </form>
+
+    <div id="error-container" class="error-container" aria-live="polite"></div>
+    <div id="result-container" class="result-container" aria-live="polite">
+      <div id="spinner" class="spinner"></div>
+      <div id="result-content"></div>
+    </div>
+  </main>
+
+  <script>
+    /* =====================================================================
+       DOMAIN LAYER (VALUE OBJECTS & ENTITIES)
+       ===================================================================== */
+    class CommissionResult {
+      constructor(amount, rate, countryCode) {
+        this._amount = amount;
+        this._rate = rate;
+        this._countryCode = countryCode;
+        Object.freeze(this);
+      }
+      get amount() { return this._amount; }
+      get rate() { return this._rate; }
+      get countryCode() { return this._countryCode; }
+    }
+
+    class SalesTransaction {
+      constructor(sales, discounts) {
+        this._validate(sales, discounts);
+        this._sales = sales;
+        this._discounts = discounts;
+      }
+      _validate(sales, discounts) {
+        if (typeof sales !== 'number' || isNaN(sales) || sales < 0) {
+          throw new Error("Ventas deben ser un número positivo.");
+        }
+        if (typeof discounts !== 'number' || isNaN(discounts) || discounts < 0) {
+          throw new Error("Descuentos deben ser numéricos.");
+        }
+        if (discounts > sales) {
+          throw new Error("Descuentos no pueden superar a las ventas.");
+        }
+      }
+      get netSales() { return this._sales - this._discounts; }
+    }
+
+    class CommissionStrategy {
+      constructor() { if (this.constructor === CommissionStrategy) throw new Error("Abstract class"); }
+      calculate(transaction) { throw new Error("Not implemented"); }
+      getRate() { throw new Error("Not implemented"); }
+      getCountryName() { throw new Error("Not implemented"); }
+    }
+
+    class IndiaCommissionStrategy extends CommissionStrategy {
+      calculate(transaction) { return transaction.netSales * this.getRate(); }
+      getRate() { return 0.10; }
+      getCountryName() { return "India"; }
+    }
+
+    class USCommissionStrategy extends CommissionStrategy {
+      calculate(transaction) { return transaction.netSales * this.getRate(); }
+      getRate() { return 0.15; }
+      getCountryName() { return "United States"; }
+    }
+
+    class UKCommissionStrategy extends CommissionStrategy {
+      calculate(transaction) { return transaction.netSales * this.getRate(); }
+      getRate() { return 0.12; }
+      getCountryName() { return "United Kingdom"; }
+    }
+
+    /* =====================================================================
+       INFRASTRUCTURE LAYER (FACTORIES)
+       ===================================================================== */
+    class CommissionStrategyFactory {
+      constructor() { this._strategies = new Map(); }
+      registerStrategy(countryCode, strategy) { this._strategies.set(countryCode, strategy); }
+      getStrategy(countryCode) {
+        if (!this._strategies.has(countryCode)) {
+          throw new Error(`Estrategia no definida para: ${countryCode}`);
+        }
+        return this._strategies.get(countryCode);
+      }
+    }
+
+    /* =====================================================================
+       APPLICATION LAYER (USE CASES)
+       ===================================================================== */
+    class CalculateCommissionUseCase {
+      constructor(strategyFactory) { this._strategyFactory = strategyFactory; }
+      execute(sales, discounts, countryCode) {
+        const transaction = new SalesTransaction(sales, discounts);
+        const strategy = this._strategyFactory.getStrategy(countryCode);
+        const amount = strategy.calculate(transaction);
+        return new CommissionResult(amount, strategy.getRate(), strategy.getCountryName());
+      }
+    }
+
+    /* =====================================================================
+       PRESENTATION & UI LOGIC (WITH UX/UI ANIMATIONS)
+       ===================================================================== */
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Dependency Wiring
+      const strategyFactory = new CommissionStrategyFactory();
+      strategyFactory.registerStrategy('IN', new IndiaCommissionStrategy());
+      strategyFactory.registerStrategy('US', new USCommissionStrategy());
+      strategyFactory.registerStrategy('UK', new UKCommissionStrategy());
+
+      const calculateUseCase = new CalculateCommissionUseCase(strategyFactory);
+
+      // 2. UI Elements
+      const countrySelect   = document.getElementById('country-select');
+      const form            = document.getElementById('commission-form');
+      const salesInput      = document.getElementById('sales-input');
+      const discountsInput  = document.getElementById('discounts-input');
+      const resultContainer = document.getElementById('result-container');
+      const errorContainer  = document.getElementById('error-container');
+
+      // Colors mapping
+      // India: accent #FF9933
+      // US: accent #B22234
+      // UK: accent #C8102E
+      const countryColors = {
+        'IN': { accent: '#FF9933', rgb: '255, 153, 51' },
+        'US': { accent: '#B22234', rgb: '178, 34, 52' },
+        'UK': { accent: '#C8102E', rgb: '200, 16, 46' }
+      };
+
+      // 3. UI Interactions - Background & Colors
+      let activeBgId = null;
+
+      countrySelect.addEventListener('change', (e) => {
+        const code = e.target.value;
+        if (!code) return; // Prevent logic if it's the empty option
+        
+        const colorData = countryColors[code] || { accent: '#7c3aed', rgb: '124, 58, 237' };
+
+        // Updating CSS Custom Properties
+        document.documentElement.style.setProperty('--accent', colorData.accent);
+        document.documentElement.style.setProperty('--accent-rgb', colorData.rgb);
+
+        // Hide Mosaics & activate overlay focus
+        const mosaic = document.getElementById('bg-mosaic');
+        mosaic.style.opacity = '0';
+        setTimeout(() => { 
+          if(document.getElementById('country-select').value === code) { // only hide if not reset
+            mosaic.style.display = 'none'; 
+          }
+        }, 600);
+
+        document.getElementById('overlay-grid').style.opacity = '0';
+        
+        const overlayFocus = document.getElementById('overlay-focus');
+        overlayFocus.style.opacity = '1';
+
+        // Fade out previous flag if exists
+        if (activeBgId && activeBgId !== `bg-${code.toLowerCase()}`) {
+          const oldBg = document.getElementById(activeBgId);
+          if (oldBg) {
+            oldBg.classList.remove('flag-active');
+            setTimeout(() => { 
+              if(!oldBg.classList.contains('flag-active')) {
+                oldBg.style.display = 'none'; 
+              }
+            }, 600);
+          }
+        }
+
+        // Apply new background flag with Ken Burns
+        const newBgId = `bg-${code.toLowerCase()}`;
+        const newBg = document.getElementById(newBgId);
+        if (newBg) {
+          // Clear any inline styles that might interfere
+          newBg.style.opacity = '';
+          newBg.style.display = 'block';
+          
+          // trigger reflow
+          void newBg.offsetWidth;
+          
+          newBg.classList.add('flag-active');
+          activeBgId = newBgId;
+        }
+
+        // Hide errors / results on change
+        errorContainer.style.display = 'none';
+        resultContainer.style.display = 'none';
+      });
+
+      // UX UI Buttons
+      const btnBack       = document.getElementById('btn-back');
+      const btnHelp       = document.getElementById('btn-help');
+      const helpModal     = document.getElementById('help-modal');
+      const closeModal    = document.getElementById('close-modal');
+      const spinner       = document.getElementById('spinner');
+      const resultContent = document.getElementById('result-content');
+      const btnCalculate  = document.getElementById('btn-calculate');
+
+      // Help Modal Logic
+      btnHelp.addEventListener('click', () => { helpModal.style.display = 'flex'; });
+      closeModal.addEventListener('click', () => { helpModal.style.display = 'none'; });
+      
+      // Start Over (Back) Logic
+      btnBack.addEventListener('click', () => {
+        form.reset(); // This sets countrySelect to ''
+        
+        errorContainer.style.display = 'none';
+        resultContainer.style.display = 'none';
+        
+        // Restore Mosaic
+        const mosaic = document.getElementById('bg-mosaic');
+        mosaic.style.display = 'flex';
+        // Force reflow
+        void mosaic.offsetWidth;
+        mosaic.style.opacity = '1';
+        
+        document.getElementById('overlay-grid').style.opacity = '1';
+        document.getElementById('overlay-focus').style.opacity = '0';
+        
+        // Hide single flags immediately
+        if (activeBgId) {
+          const oldBg = document.getElementById(activeBgId);
+          if (oldBg) {
+            oldBg.classList.remove('flag-active');
+            oldBg.style.display = 'none';
+          }
+          activeBgId = null;
+        }
+
+        document.documentElement.style.setProperty('--accent', '#7c3aed');
+        document.documentElement.style.setProperty('--accent-rgb', '124, 58, 237');
+      });
+
+      // 4. Form Submission (With UX System Status)
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        errorContainer.style.display = 'none';
+        resultContainer.style.display = 'none';
+        resultContent.innerHTML = '';
+        btnCalculate.disabled = true;
+
+        try {
+          const code = countrySelect.value;
+          if (!code) throw new Error("Please select a geographic region.");
+          
+          const sales = parseFloat(salesInput.value);
+          const discounts = parseFloat(discountsInput.value) || 0;
+
+          // Executing core business logic
+          const result = calculateUseCase.execute(sales, discounts, code);
+
+          // UX: Show system status (Artificial delay to communicate processing)
+          resultContainer.style.display = 'block';
+          spinner.style.display = 'block';
+
+          setTimeout(() => {
+            spinner.style.display = 'none';
+            btnCalculate.disabled = false;
+            
+            const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+            resultContent.innerHTML = `
+              <h3>Commission Summary</h3>
+              <div class="result-details">
+                <span>Selected Region:</span>
+                <strong>${result.countryCode}</strong>
+              </div>
+              <div class="result-details">
+                <span>Applied Rate:</span>
+                <strong>${(result.rate * 100).toFixed(0)}%</strong>
+              </div>
+              <div class="result-amount">
+                Total Commission <span>${formatter.format(result.amount)}</span>
+              </div>
+            `;
+          }, 600); // 600ms feedback delay
+
+        } catch (error) {
+          btnCalculate.disabled = false;
+          resultContainer.style.display = 'none';
+          errorContainer.style.display = 'block';
+          errorContainer.innerHTML = `⚠️ ${error.message}`;
+        }
+      });
+    });
+  </script>
+</body>
+</html>
