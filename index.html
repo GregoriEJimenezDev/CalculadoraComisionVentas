@@ -1,14 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" id="html-root">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sales Commission Calculator - Premium UI</title>
+  <title>Calculadora de Comisión de Ventas - UI Premium</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
+
   <style>
     :root {
-      --accent: #7c3aed; /* Default Violet */
+      --accent: #7c3aed;
+      /* Default Violet */
       --text-main: #f8fafc;
       --transition-btn: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
@@ -27,7 +29,8 @@
       justify-content: center;
       align-items: center;
       color: var(--text-main);
-      overflow: hidden; /* Prevent scrolling during Ken Burns */
+      overflow: hidden;
+      /* Prevent scrolling during Ken Burns */
       background: #0f172a;
     }
 
@@ -38,8 +41,10 @@
     */
     .bg-layer {
       position: absolute;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
       z-index: 1;
       opacity: 0;
       pointer-events: none;
@@ -49,21 +54,29 @@
     /* Initial Mosaic State */
     .bg-mosaic {
       display: flex;
-      opacity: 1; /* Visible by default */
+      opacity: 1;
+      /* Visible by default */
     }
 
     /* Overlays to ensure legibility */
     .overlay-grid {
       position: absolute;
-      top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(0,0,0,0.35); /* Soft dark overlay for mosaic */
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.35);
+      /* Soft dark overlay for mosaic */
       z-index: 2;
     }
-    
+
     .overlay-focus {
       position: absolute;
-      top: 0; left: 0; width: 100vw; height: 100vh;
-      background: radial-gradient(circle at center, rgba(15,23,42,0.4) 0%, rgba(15,23,42,0.85) 100%);
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: radial-gradient(circle at center, rgba(15, 23, 42, 0.4) 0%, rgba(15, 23, 42, 0.85) 100%);
       z-index: 2;
       opacity: 0;
       transition: opacity 0.6s ease;
@@ -71,8 +84,13 @@
 
     /* Ken Burns Animation */
     @keyframes kenBurns {
-      from { transform: scale(1.08); }
-      to { transform: scale(1.0); }
+      from {
+        transform: scale(1.08);
+      }
+
+      to {
+        transform: scale(1.0);
+      }
     }
 
     .flag-active {
@@ -87,15 +105,18 @@
       flex: 1;
       height: 100%;
     }
+
     .flag-in::after {
       content: '';
       position: absolute;
-      top: 50%; left: 50%;
+      top: 50%;
+      left: 50%;
       transform: translate(-50%, -50%);
-      width: min(8vw, 15vh); height: min(8vw, 15vh);
+      width: min(8vw, 15vh);
+      height: min(8vw, 15vh);
       border-radius: 50%;
       border: 6px solid #000080;
-      background: radial-gradient(circle, transparent 40%, rgba(0,0,128,0.2) 60%);
+      background: radial-gradient(circle, transparent 40%, rgba(0, 0, 128, 0.2) 60%);
     }
 
     /* 🇺🇸 US Flag */
@@ -105,11 +126,14 @@
       flex: 1;
       height: 100%;
     }
+
     .flag-us::before {
       content: '';
       position: absolute;
-      top: 0; left: 0;
-      width: 40%; height: 53.85%;
+      top: 0;
+      left: 0;
+      width: 40%;
+      height: 53.85%;
       background-color: #3C3B6E;
       background-image: radial-gradient(white 1.5px, transparent 1.5px);
       background-size: 20px 20px;
@@ -119,7 +143,7 @@
     /* 🇬🇧 UK Flag */
     .flag-uk {
       background-color: #012169;
-      background-image: 
+      background-image:
         linear-gradient(90deg, transparent 46%, #C8102E 46%, #C8102E 54%, transparent 54%),
         linear-gradient(0deg, transparent 42%, #C8102E 42%, #C8102E 58%, transparent 58%),
         linear-gradient(90deg, transparent 43%, #FFFFFF 43%, #FFFFFF 57%, transparent 57%),
@@ -166,9 +190,9 @@
       font-weight: 700;
       margin-bottom: 0.5rem;
       color: #ffffff;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
-    
+
     .header-title p {
       font-size: 0.95rem;
       color: rgba(255, 255, 255, 0.85);
@@ -186,7 +210,7 @@
       text-transform: uppercase;
       letter-spacing: 0.05em;
       color: rgba(255, 255, 255, 0.95);
-      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     }
 
     .form-control {
@@ -257,7 +281,7 @@
       font-size: 1.1rem;
       margin-bottom: 1rem;
       color: var(--accent);
-      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     }
 
     .result-details {
@@ -283,7 +307,7 @@
       font-size: 1.8rem;
       font-weight: 800;
       color: var(--accent);
-      text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
     }
 
     .error-container {
@@ -306,8 +330,49 @@
       right: 1.5rem;
       display: flex;
       justify-content: space-between;
+      align-items: center;
       z-index: 20;
     }
+
+    .nav-left,
+    .nav-right {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    /* Logo */
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      text-decoration: none;
+      color: white;
+    }
+
+    .nav-logo img {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(124, 58, 237, 0.4);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .nav-logo:hover img {
+      transform: scale(1.1) rotate(-3deg);
+      box-shadow: 0 4px 16px rgba(124, 58, 237, 0.6);
+    }
+
+    .nav-logo-text {
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: -0.01em;
+      background: linear-gradient(135deg, #c4b5fd, #93c5fd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
     .icon-btn {
       background: rgba(255, 255, 255, 0.15);
       backdrop-filter: blur(10px);
@@ -320,77 +385,179 @@
       font-size: 0.9rem;
       transition: all var(--transition-btn);
     }
+
     .icon-btn:hover {
       background: rgba(255, 255, 255, 0.25);
+    }
+
+    /* Language Selector Dropdown */
+    .lang-selector {
+      position: relative;
+    }
+
+    .lang-select {
+      appearance: none;
+      -webkit-appearance: none;
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.3), rgba(59, 130, 246, 0.3));
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: white;
+      padding: 0.6rem 2.2rem 0.6rem 0.9rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      font-family: 'Inter', sans-serif;
+      letter-spacing: 0.02em;
+      transition: all var(--transition-btn);
+      outline: none;
+    }
+
+    .lang-select option {
+      background: #1e293b;
+      color: #e2e8f0;
+      font-weight: 500;
+      padding: 0.5rem;
+    }
+
+    .lang-select:hover {
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.5), rgba(59, 130, 246, 0.5));
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+    }
+
+    .lang-select:focus {
+      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.3);
+    }
+
+    .lang-selector::after {
+      content: '▾';
+      position: absolute;
+      right: 0.7rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.8rem;
+      pointer-events: none;
     }
 
     /* Modal Help */
     .modal-overlay {
       display: none;
       position: fixed;
-      top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(0,0,0,0.6);
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.6);
       backdrop-filter: blur(5px);
       z-index: 100;
       justify-content: center;
       align-items: center;
       animation: kenBurns 0.3s ease-out forwards;
     }
+
     .modal-content {
       background: #1e293b;
       padding: 2rem;
       border-radius: 12px;
       max-width: 500px;
       width: 90%;
-      border: 1px solid rgba(255,255,255,0.1);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       color: #e2e8f0;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
     }
-    .modal-content h2 { margin-bottom: 1rem; color: white; }
-    .modal-content p, .modal-content li { margin-bottom: 0.8rem; line-height: 1.5; font-size: 0.95rem; }
+
+    .modal-content h2 {
+      margin-bottom: 1rem;
+      color: white;
+    }
+
+    .modal-content p,
+    .modal-content li {
+      margin-bottom: 0.8rem;
+      line-height: 1.5;
+      font-size: 0.95rem;
+    }
+
     .close-modal {
-      display: block; width: 100%; margin-top: 1.5rem;
-      padding: 0.8rem; background: #3b82f6; color: white;
-      border: none; border-radius: 8px; font-weight: bold; cursor: pointer;
+      display: block;
+      width: 100%;
+      margin-top: 1.5rem;
+      padding: 0.8rem;
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
     }
 
     /* UX: System Status Spinner */
     .spinner {
       display: none;
-      border: 3px solid rgba(255,255,255,0.2);
+      border: 3px solid rgba(255, 255, 255, 0.2);
       border-top-color: white;
       border-radius: 50%;
-      width: 24px; height: 24px;
+      width: 24px;
+      height: 24px;
       animation: spin 1s linear infinite;
       margin: 0 auto 1rem auto;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
 
     @keyframes slideUp {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
+
 <body>
   <!-- UX Navigation -->
   <nav class="top-nav">
-    <button id="btn-back" class="icon-btn">← Start Over</button>
-    <button id="btn-help" class="icon-btn">? Help</button>
+    <div class="nav-left">
+      <a class="nav-logo" href="#" title="Commission Matrix">
+        <img src="assets/logo.png" alt="Logo" id="app-logo">
+        <span class="nav-logo-text">CommissionMatrix</span>
+      </a>
+    </div>
+    <div class="nav-right">
+      <div class="lang-selector">
+        <select id="lang-select" class="lang-select" title="Idioma / Language">
+          <option value="es">🇪🇸 Español</option>
+          <option value="en">🇺🇸 English</option>
+        </select>
+      </div>
+      <button id="btn-back" class="icon-btn" data-i18n="btnBack">← Reiniciar</button>
+      <button id="btn-help" class="icon-btn" data-i18n="btnHelp">? Ayuda</button>
+    </div>
   </nav>
 
   <!-- Help Modal -->
   <div id="help-modal" class="modal-overlay">
     <div class="modal-content">
-      <h2>How to use this Calculator</h2>
-      <p>This system calculates your final commissions based on the region you operate.</p>
+      <h2 data-i18n="helpTitle">Cómo usar esta Calculadora</h2>
+      <p data-i18n="helpDescription">Este sistema calcula tus comisiones finales según la región en la que operas.</p>
       <ul>
-        <li><strong>India:</strong> 10% commission on Net Sales.</li>
-        <li><strong>United States:</strong> 15% commission on Net Sales.</li>
-        <li><strong>United Kingdom:</strong> 12% commission on Net Sales.</li>
+        <li data-i18n-html="helpIndia"><strong>India:</strong> 10% de comisión sobre Ventas Netas.</li>
+        <li data-i18n-html="helpUS"><strong>Estados Unidos:</strong> 15% de comisión sobre Ventas Netas.</li>
+        <li data-i18n-html="helpUK"><strong>Reino Unido:</strong> 12% de comisión sobre Ventas Netas.</li>
       </ul>
-      <p><em>Note: Net Sales = Total Sales - Discounts. Discounts cannot exceed Total Sales.</em></p>
-      <button id="close-modal" class="close-modal">Understood</button>
+      <p data-i18n-html="helpNote"><em>Nota: Ventas Netas = Ventas Totales - Descuentos. Los descuentos no pueden superar las ventas.</em></p>
+      <button id="close-modal" class="close-modal" data-i18n="helpClose">Entendido</button>
     </div>
   </div>
 
@@ -411,32 +578,33 @@
   <!-- GLASSMORPHISM UI -->
   <main class="card-container">
     <div class="header-title">
-      <h1>Commission Matrix</h1>
-      <p>Estimate your global sales margins.</p>
+      <h1 data-i18n="mainTitle">Matriz de Comisiones</h1>
+      <p data-i18n="mainSubtitle">Estima tus márgenes de ventas globales.</p>
     </div>
 
     <form id="commission-form">
       <div class="form-group">
-        <label for="country-select">Operating Region</label>
+        <label for="country-select" data-i18n="labelRegion">Región de Operación</label>
         <select id="country-select" class="form-control" required>
-          <option value="" disabled selected>Select a country...</option>
-          <option value="IN">India (10%)</option>
-          <option value="US">United States (15%)</option>
-          <option value="UK">United Kingdom (12%)</option>
+          <option value="" disabled selected data-i18n="placeholderRegion">Selecciona un país...</option>
+          <option value="IN" data-i18n="optionIndia">India (10%)</option>
+          <option value="US" data-i18n="optionUS">Estados Unidos (15%)</option>
+          <option value="UK" data-i18n="optionUK">Reino Unido (12%)</option>
         </select>
       </div>
 
       <div class="form-group">
-        <label for="sales-input">Total Sales ($)</label>
-        <input type="number" id="sales-input" class="form-control" step="0.01" min="0" placeholder="e.g. 15000.00" required>
+        <label for="sales-input" data-i18n="labelSales">Ventas Totales ($)</label>
+        <input type="number" id="sales-input" class="form-control" step="0.01" min="0" data-i18n-placeholder="placeholderSales" placeholder="ej. 15000.00"
+          required>
       </div>
 
       <div class="form-group">
-        <label for="discounts-input">Discounts Applied ($)</label>
-        <input type="number" id="discounts-input" class="form-control" step="0.01" min="0" placeholder="e.g. 500.00">
+        <label for="discounts-input" data-i18n="labelDiscounts">Descuentos Aplicados ($)</label>
+        <input type="number" id="discounts-input" class="form-control" step="0.01" min="0" data-i18n-placeholder="placeholderDiscounts" placeholder="ej. 500.00">
       </div>
 
-      <button type="submit" id="btn-calculate" class="btn-submit">Calculate Remuneration</button>
+      <button type="submit" id="btn-calculate" class="btn-submit" data-i18n="btnCalculate">Calcular Remuneración</button>
     </form>
 
     <div id="error-container" class="error-container" aria-live="polite"></div>
@@ -446,6 +614,7 @@
     </div>
   </main>
 
+  <script src="infrastructure/i18n/translations.js"></script>
   <script>
     /* =====================================================================
        DOMAIN LAYER (VALUE OBJECTS & ENTITIES)
@@ -463,20 +632,21 @@
     }
 
     class SalesTransaction {
-      constructor(sales, discounts) {
+      constructor(sales, discounts, i18n) {
+        this._i18n = i18n;
         this._validate(sales, discounts);
         this._sales = sales;
         this._discounts = discounts;
       }
       _validate(sales, discounts) {
         if (typeof sales !== 'number' || isNaN(sales) || sales < 0) {
-          throw new Error("Ventas deben ser un número positivo.");
+          throw new Error(this._i18n.t('errorPositiveSales'));
         }
         if (typeof discounts !== 'number' || isNaN(discounts) || discounts < 0) {
-          throw new Error("Descuentos deben ser numéricos.");
+          throw new Error(this._i18n.t('errorNumericDiscounts'));
         }
         if (discounts > sales) {
-          throw new Error("Descuentos no pueden superar a las ventas.");
+          throw new Error(this._i18n.t('errorDiscountsExceed'));
         }
       }
       get netSales() { return this._sales - this._discounts; }
@@ -511,11 +681,11 @@
        INFRASTRUCTURE LAYER (FACTORIES)
        ===================================================================== */
     class CommissionStrategyFactory {
-      constructor() { this._strategies = new Map(); }
+      constructor(i18n) { this._strategies = new Map(); this._i18n = i18n; }
       registerStrategy(countryCode, strategy) { this._strategies.set(countryCode, strategy); }
       getStrategy(countryCode) {
         if (!this._strategies.has(countryCode)) {
-          throw new Error(`Estrategia no definida para: ${countryCode}`);
+          throw new Error(`${this._i18n.t('errorStrategyNotFound')} ${countryCode}`);
         }
         return this._strategies.get(countryCode);
       }
@@ -525,9 +695,9 @@
        APPLICATION LAYER (USE CASES)
        ===================================================================== */
     class CalculateCommissionUseCase {
-      constructor(strategyFactory) { this._strategyFactory = strategyFactory; }
+      constructor(strategyFactory, i18n) { this._strategyFactory = strategyFactory; this._i18n = i18n; }
       execute(sales, discounts, countryCode) {
-        const transaction = new SalesTransaction(sales, discounts);
+        const transaction = new SalesTransaction(sales, discounts, this._i18n);
         const strategy = this._strategyFactory.getStrategy(countryCode);
         const amount = strategy.calculate(transaction);
         return new CommissionResult(amount, strategy.getRate(), strategy.getCountryName());
@@ -535,42 +705,83 @@
     }
 
     /* =====================================================================
-       PRESENTATION & UI LOGIC (WITH UX/UI ANIMATIONS)
+       PRESENTATION & UI LOGIC (WITH UX/UI ANIMATIONS & i18n)
        ===================================================================== */
     document.addEventListener('DOMContentLoaded', () => {
+      // 0. Initialize i18n Service
+      const i18n = new I18nService();
+
       // 1. Dependency Wiring
-      const strategyFactory = new CommissionStrategyFactory();
+      const strategyFactory = new CommissionStrategyFactory(i18n);
       strategyFactory.registerStrategy('IN', new IndiaCommissionStrategy());
       strategyFactory.registerStrategy('US', new USCommissionStrategy());
       strategyFactory.registerStrategy('UK', new UKCommissionStrategy());
 
-      const calculateUseCase = new CalculateCommissionUseCase(strategyFactory);
+      const calculateUseCase = new CalculateCommissionUseCase(strategyFactory, i18n);
 
       // 2. UI Elements
-      const countrySelect   = document.getElementById('country-select');
-      const form            = document.getElementById('commission-form');
-      const salesInput      = document.getElementById('sales-input');
-      const discountsInput  = document.getElementById('discounts-input');
+      const countrySelect = document.getElementById('country-select');
+      const form = document.getElementById('commission-form');
+      const salesInput = document.getElementById('sales-input');
+      const discountsInput = document.getElementById('discounts-input');
       const resultContainer = document.getElementById('result-container');
-      const errorContainer  = document.getElementById('error-container');
+      const errorContainer = document.getElementById('error-container');
 
       // Colors mapping
-      // India: accent #FF9933
-      // US: accent #B22234
-      // UK: accent #C8102E
       const countryColors = {
         'IN': { accent: '#FF9933', rgb: '255, 153, 51' },
         'US': { accent: '#B22234', rgb: '178, 34, 52' },
         'UK': { accent: '#C8102E', rgb: '200, 16, 46' }
       };
 
+      // =============================================
+      // i18n: Apply translations to all UI elements
+      // =============================================
+      function applyTranslations() {
+        // Update html lang attribute
+        document.getElementById('html-root').setAttribute('lang', i18n.currentLang);
+
+        // Update page title
+        document.title = i18n.t('pageTitle');
+
+        // Update text content via data-i18n attribute
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          el.textContent = i18n.t(el.dataset.i18n);
+        });
+
+        // Update innerHTML via data-i18n-html attribute (for rich content)
+        document.querySelectorAll('[data-i18n-html]').forEach(el => {
+          el.innerHTML = i18n.t(el.dataset.i18nHtml);
+        });
+
+        // Update placeholders via data-i18n-placeholder attribute
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+          el.placeholder = i18n.t(el.dataset.i18nPlaceholder);
+        });
+      }
+
+      // Apply translations on load
+      applyTranslations();
+
+      // Listen for language changes
+      i18n.onLanguageChange(() => {
+        applyTranslations();
+      });
+
+      // Language Dropdown Selector
+      const langSelect = document.getElementById('lang-select');
+      langSelect.value = i18n.currentLang; // sync dropdown with default
+      langSelect.addEventListener('change', (e) => {
+        i18n.setLanguage(e.target.value);
+      });
+
       // 3. UI Interactions - Background & Colors
       let activeBgId = null;
 
       countrySelect.addEventListener('change', (e) => {
         const code = e.target.value;
-        if (!code) return; // Prevent logic if it's the empty option
-        
+        if (!code) return;
+
         const colorData = countryColors[code] || { accent: '#7c3aed', rgb: '124, 58, 237' };
 
         // Updating CSS Custom Properties
@@ -580,14 +791,14 @@
         // Hide Mosaics & activate overlay focus
         const mosaic = document.getElementById('bg-mosaic');
         mosaic.style.opacity = '0';
-        setTimeout(() => { 
-          if(document.getElementById('country-select').value === code) { // only hide if not reset
-            mosaic.style.display = 'none'; 
+        setTimeout(() => {
+          if (document.getElementById('country-select').value === code) {
+            mosaic.style.display = 'none';
           }
         }, 600);
 
         document.getElementById('overlay-grid').style.opacity = '0';
-        
+
         const overlayFocus = document.getElementById('overlay-focus');
         overlayFocus.style.opacity = '1';
 
@@ -596,9 +807,9 @@
           const oldBg = document.getElementById(activeBgId);
           if (oldBg) {
             oldBg.classList.remove('flag-active');
-            setTimeout(() => { 
-              if(!oldBg.classList.contains('flag-active')) {
-                oldBg.style.display = 'none'; 
+            setTimeout(() => {
+              if (!oldBg.classList.contains('flag-active')) {
+                oldBg.style.display = 'none';
               }
             }, 600);
           }
@@ -608,13 +819,9 @@
         const newBgId = `bg-${code.toLowerCase()}`;
         const newBg = document.getElementById(newBgId);
         if (newBg) {
-          // Clear any inline styles that might interfere
           newBg.style.opacity = '';
           newBg.style.display = 'block';
-          
-          // trigger reflow
           void newBg.offsetWidth;
-          
           newBg.classList.add('flag-active');
           activeBgId = newBgId;
         }
@@ -625,35 +832,34 @@
       });
 
       // UX UI Buttons
-      const btnBack       = document.getElementById('btn-back');
-      const btnHelp       = document.getElementById('btn-help');
-      const helpModal     = document.getElementById('help-modal');
-      const closeModal    = document.getElementById('close-modal');
-      const spinner       = document.getElementById('spinner');
+      const btnBack = document.getElementById('btn-back');
+      const btnHelp = document.getElementById('btn-help');
+      const helpModal = document.getElementById('help-modal');
+      const closeModal = document.getElementById('close-modal');
+      const spinner = document.getElementById('spinner');
       const resultContent = document.getElementById('result-content');
-      const btnCalculate  = document.getElementById('btn-calculate');
+      const btnCalculate = document.getElementById('btn-calculate');
 
       // Help Modal Logic
       btnHelp.addEventListener('click', () => { helpModal.style.display = 'flex'; });
       closeModal.addEventListener('click', () => { helpModal.style.display = 'none'; });
-      
+
       // Start Over (Back) Logic
       btnBack.addEventListener('click', () => {
-        form.reset(); // This sets countrySelect to ''
-        
+        form.reset();
+
         errorContainer.style.display = 'none';
         resultContainer.style.display = 'none';
-        
+
         // Restore Mosaic
         const mosaic = document.getElementById('bg-mosaic');
         mosaic.style.display = 'flex';
-        // Force reflow
         void mosaic.offsetWidth;
         mosaic.style.opacity = '1';
-        
+
         document.getElementById('overlay-grid').style.opacity = '1';
         document.getElementById('overlay-focus').style.opacity = '0';
-        
+
         // Hide single flags immediately
         if (activeBgId) {
           const oldBg = document.getElementById(activeBgId);
@@ -671,7 +877,7 @@
       // 4. Form Submission (With UX System Status)
       form.addEventListener('submit', (e) => {
         e.preventDefault();
-        
+
         errorContainer.style.display = 'none';
         resultContainer.style.display = 'none';
         resultContent.innerHTML = '';
@@ -679,8 +885,8 @@
 
         try {
           const code = countrySelect.value;
-          if (!code) throw new Error("Please select a geographic region.");
-          
+          if (!code) throw new Error(i18n.t('errorSelectRegion'));
+
           const sales = parseFloat(salesInput.value);
           const discounts = parseFloat(discountsInput.value) || 0;
 
@@ -694,23 +900,23 @@
           setTimeout(() => {
             spinner.style.display = 'none';
             btnCalculate.disabled = false;
-            
+
             const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
             resultContent.innerHTML = `
-              <h3>Commission Summary</h3>
+              <h3>${i18n.t('resultTitle')}</h3>
               <div class="result-details">
-                <span>Selected Region:</span>
+                <span>${i18n.t('resultRegion')}</span>
                 <strong>${result.countryCode}</strong>
               </div>
               <div class="result-details">
-                <span>Applied Rate:</span>
+                <span>${i18n.t('resultRate')}</span>
                 <strong>${(result.rate * 100).toFixed(0)}%</strong>
               </div>
               <div class="result-amount">
-                Total Commission <span>${formatter.format(result.amount)}</span>
+                ${i18n.t('resultTotal')} <span>${formatter.format(result.amount)}</span>
               </div>
             `;
-          }, 600); // 600ms feedback delay
+          }, 600);
 
         } catch (error) {
           btnCalculate.disabled = false;
@@ -722,4 +928,5 @@
     });
   </script>
 </body>
+
 </html>
