@@ -556,7 +556,8 @@
         <li data-i18n-html="helpUS"><strong>Estados Unidos:</strong> 15% de comisión sobre Ventas Netas.</li>
         <li data-i18n-html="helpUK"><strong>Reino Unido:</strong> 12% de comisión sobre Ventas Netas.</li>
       </ul>
-      <p data-i18n-html="helpNote"><em>Nota: Ventas Netas = Ventas Totales - Descuentos. Los descuentos no pueden superar las ventas.</em></p>
+      <p data-i18n-html="helpNote"><em>Nota: Ventas Netas = Ventas Totales - Descuentos. Los descuentos no pueden
+          superar las ventas.</em></p>
       <button id="close-modal" class="close-modal" data-i18n="helpClose">Entendido</button>
     </div>
   </div>
@@ -595,16 +596,16 @@
 
       <div class="form-group">
         <label for="sales-input" data-i18n="labelSales">Ventas Totales ($)</label>
-        <input type="number" id="sales-input" class="form-control" step="0.01" min="0" data-i18n-placeholder="placeholderSales" placeholder="ej. 15000.00"
-          required>
+        <input type="number" id="sales-input" class="form-control" step="0.01" min="0"
+          data-i18n-placeholder="placeholderSales" placeholder="ej. 15000.00" required>
       </div>
 
       <div class="form-group">
         <label for="discounts-input" data-i18n="labelDiscounts">Descuentos Aplicados ($)</label>
-        <input type="number" id="discounts-input" class="form-control" step="0.01" min="0" data-i18n-placeholder="placeholderDiscounts" placeholder="ej. 500.00">
+        <input type="number" id="discounts-input" class="form-control" step="0.01" min="0"
+          data-i18n-placeholder="placeholderDiscounts" placeholder="ej. 500.00">
       </div>
 
-      <button type="submit" id="btn-calculate" class="btn-submit" data-i18n="btnCalculate">Calcular Remuneración</button>
     </form>
 
     <div id="error-container" class="error-container" aria-live="polite"></div>
@@ -829,6 +830,7 @@
         // Hide errors / results on change
         errorContainer.style.display = 'none';
         resultContainer.style.display = 'none';
+        scheduleAutoCalculation();
       });
 
       // UX UI Buttons
@@ -838,11 +840,72 @@
       const closeModal = document.getElementById('close-modal');
       const spinner = document.getElementById('spinner');
       const resultContent = document.getElementById('result-content');
-      const btnCalculate = document.getElementById('btn-calculate');
+      const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+      let autoCalcTimer = null;
 
       // Help Modal Logic
       btnHelp.addEventListener('click', () => { helpModal.style.display = 'flex'; });
       closeModal.addEventListener('click', () => { helpModal.style.display = 'none'; });
+
+      function updateDiscountConstraint() {
+        const salesValue = parseFloat(salesInput.value);
+        if (!isNaN(salesValue) && salesValue >= 0) {
+          discountsInput.max = salesValue.toString();
+        } else {
+          discountsInput.removeAttribute('max');
+        }
+      }
+
+      function renderResult(result) {
+        resultContainer.style.display = 'block';
+        spinner.style.display = 'none';
+        resultContent.innerHTML = `
+          <h3>${i18n.t('resultTitle')}</h3>
+          <div class="result-details">
+            <span>${i18n.t('resultRegion')}</span>
+            <strong>${result.countryCode}</strong>
+          </div>
+          <div class="result-details">
+            <span>${i18n.t('resultRate')}</span>
+            <strong>${(result.rate * 100).toFixed(0)}%</strong>
+          </div>
+          <div class="result-amount">
+            ${i18n.t('resultTotal')} <span>${formatter.format(result.amount)}</span>
+          </div>
+        `;
+      }
+
+      function runAutoCalculation() {
+        errorContainer.style.display = 'none';
+        resultContainer.style.display = 'none';
+        resultContent.innerHTML = '';
+        spinner.style.display = 'none';
+
+        const code = countrySelect.value;
+        const salesRaw = salesInput.value.trim();
+        const discountsRaw = discountsInput.value.trim();
+
+        if (!code || salesRaw === '') return;
+
+        const sales = parseFloat(salesRaw);
+        const discounts = discountsRaw === '' ? 0 : parseFloat(discountsRaw);
+
+        try {
+          const result = calculateUseCase.execute(sales, discounts, code);
+          renderResult(result);
+        } catch (error) {
+          resultContainer.style.display = 'none';
+          errorContainer.style.display = 'block';
+          errorContainer.innerHTML = `⚠️ ${error.message}`;
+        }
+      }
+
+      function scheduleAutoCalculation() {
+        clearTimeout(autoCalcTimer);
+        autoCalcTimer = setTimeout(() => {
+          runAutoCalculation();
+        }, 220);
+      }
 
       // Start Over (Back) Logic
       btnBack.addEventListener('click', () => {
@@ -872,58 +935,22 @@
 
         document.documentElement.style.setProperty('--accent', '#7c3aed');
         document.documentElement.style.setProperty('--accent-rgb', '124, 58, 237');
+        spinner.style.display = 'none';
+        resultContent.innerHTML = '';
+        discountsInput.removeAttribute('max');
       });
 
-      // 4. Form Submission (With UX System Status)
+      salesInput.addEventListener('input', () => {
+        updateDiscountConstraint();
+        scheduleAutoCalculation();
+      });
+      discountsInput.addEventListener('input', scheduleAutoCalculation);
+      form.addEventListener('change', scheduleAutoCalculation);
+
+      // 4. Automatic Calculation (On Input Changes)
       form.addEventListener('submit', (e) => {
         e.preventDefault();
-
-        errorContainer.style.display = 'none';
-        resultContainer.style.display = 'none';
-        resultContent.innerHTML = '';
-        btnCalculate.disabled = true;
-
-        try {
-          const code = countrySelect.value;
-          if (!code) throw new Error(i18n.t('errorSelectRegion'));
-
-          const sales = parseFloat(salesInput.value);
-          const discounts = parseFloat(discountsInput.value) || 0;
-
-          // Executing core business logic
-          const result = calculateUseCase.execute(sales, discounts, code);
-
-          // UX: Show system status (Artificial delay to communicate processing)
-          resultContainer.style.display = 'block';
-          spinner.style.display = 'block';
-
-          setTimeout(() => {
-            spinner.style.display = 'none';
-            btnCalculate.disabled = false;
-
-            const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
-            resultContent.innerHTML = `
-              <h3>${i18n.t('resultTitle')}</h3>
-              <div class="result-details">
-                <span>${i18n.t('resultRegion')}</span>
-                <strong>${result.countryCode}</strong>
-              </div>
-              <div class="result-details">
-                <span>${i18n.t('resultRate')}</span>
-                <strong>${(result.rate * 100).toFixed(0)}%</strong>
-              </div>
-              <div class="result-amount">
-                ${i18n.t('resultTotal')} <span>${formatter.format(result.amount)}</span>
-              </div>
-            `;
-          }, 600);
-
-        } catch (error) {
-          btnCalculate.disabled = false;
-          resultContainer.style.display = 'none';
-          errorContainer.style.display = 'block';
-          errorContainer.innerHTML = `⚠️ ${error.message}`;
-        }
+        runAutoCalculation();
       });
     });
   </script>
