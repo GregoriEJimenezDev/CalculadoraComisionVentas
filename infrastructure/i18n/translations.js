@@ -23,7 +23,7 @@ const translations = {
     mainSubtitle: 'Estima tus márgenes de ventas globales.',
 
     // Form Labels
-    labelRegion: 'Región de Operación',
+    labelRegion: 'País de Operación',
     placeholderRegion: 'Selecciona un país...',
     optionIndia: 'India (10%)',
     optionUS: 'Estados Unidos (15%)',
@@ -36,13 +36,13 @@ const translations = {
 
     // Results
     resultTitle: 'Resumen de Comisión',
-    resultRegion: 'Región Seleccionada:',
+    resultRegion: 'País Seleccionado:',
     resultRate: 'Tasa Aplicada:',
     resultTotal: 'Comisión Total',
 
     // Help Modal
     helpTitle: 'Cómo usar esta Calculadora',
-    helpDescription: 'Este sistema calcula tus comisiones finales según la región en la que operas.',
+    helpDescription: 'Este sistema calcula tus comisiones finales según el país en el que operas.',
     helpIndia: '<strong>India:</strong> 10% de comisión sobre Ventas Netas.',
     helpUS: '<strong>Estados Unidos:</strong> 15% de comisión sobre Ventas Netas.',
     helpUK: '<strong>Reino Unido:</strong> 12% de comisión sobre Ventas Netas.',
@@ -50,7 +50,7 @@ const translations = {
     helpClose: 'Entendido',
 
     // Errors
-    errorSelectRegion: 'Por favor, selecciona una región geográfica.',
+    errorSelectRegion: 'Por favor, selecciona un país.',
     errorPositiveSales: 'Las ventas deben ser un número positivo.',
     errorNumericDiscounts: 'Los descuentos deben ser numéricos.',
     errorDiscountsExceed: 'Los descuentos no pueden superar las ventas totales.',
@@ -73,7 +73,7 @@ const translations = {
     mainSubtitle: 'Estimate your global sales margins.',
 
     // Form Labels
-    labelRegion: 'Operating Region',
+    labelRegion: 'Operating Country',
     placeholderRegion: 'Select a country...',
     optionIndia: 'India (10%)',
     optionUS: 'United States (15%)',
@@ -86,13 +86,13 @@ const translations = {
 
     // Results
     resultTitle: 'Commission Summary',
-    resultRegion: 'Selected Region:',
+    resultRegion: 'Selected Country:',
     resultRate: 'Applied Rate:',
     resultTotal: 'Total Commission',
 
     // Help Modal
     helpTitle: 'How to use this Calculator',
-    helpDescription: 'This system calculates your final commissions based on the region you operate.',
+    helpDescription: 'This system calculates your final commissions based on the country you operate in.',
     helpIndia: '<strong>India:</strong> 10% commission on Net Sales.',
     helpUS: '<strong>United States:</strong> 15% commission on Net Sales.',
     helpUK: '<strong>United Kingdom:</strong> 12% commission on Net Sales.',
@@ -100,7 +100,7 @@ const translations = {
     helpClose: 'Understood',
 
     // Errors
-    errorSelectRegion: 'Please select a geographic region.',
+    errorSelectRegion: 'Please select a country.',
     errorPositiveSales: 'Sales must be a positive number.',
     errorNumericDiscounts: 'Discounts must be numeric.',
     errorDiscountsExceed: 'Discounts cannot exceed total sales.',
